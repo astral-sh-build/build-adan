@@ -1,0 +1,39 @@
+diff --git a/setup.py b/setup.py
+index cedddf2..8b44ff3 100644
+--- a/setup.py
++++ b/setup.py
+@@ -2,9 +2,18 @@ import os
+ import sys
+ from setuptools import setup
+ 
++# See: https://github.com/Dao-AILab/flash-attention/blob/0e79d71175346c7151f49ab6287084a052bc9613/setup.py#L196
++force_cxx11_abi = os.getenv("ADAN_FORCE_CXX11_ABI", "FALSE") == "TRUE"
++
++import torch
++torch._C._GLIBCXX_USE_CXX11_ABI = force_cxx11_abi
++
+ from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+ from torch.cuda import is_available
+ 
++TORCH_MAJOR = int(torch.__version__.split(".")[0])
++TORCH_MINOR = int(torch.__version__.split(".")[1])
++
+ build_cuda_ext = is_available() or os.getenv('FORCE_CUDA', '0') == '1'
+ 
+ cuda_extension = None
+@@ -21,7 +30,7 @@ setup(
+     name='adan',
+     python_requires='>=3.8',
+     version='0.0.2',
+-    install_requires=['torch'],
++    install_requires=[f'torch=={TORCH_MAJOR}.{TORCH_MINOR}.*'],
+     py_modules=['adan'],
+     description=(
+         'Adan: Adaptive Nesterov Momentum Algorithm for '
+@@ -33,4 +42,4 @@ setup(
+     ),
+     ext_modules=[cuda_extension] if cuda_extension is not None else [],
+     cmdclass={'build_ext': BuildExtension} if build_cuda_ext else {},
+-)
+\ No newline at end of file
++)
