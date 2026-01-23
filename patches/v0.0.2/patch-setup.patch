@@ -1,5 +1,5 @@
 diff --git a/setup.py b/setup.py
-index cedddf2..8b44ff3 100644
+index cedddf2..1557d2c 100644
 --- a/setup.py
 +++ b/setup.py
 @@ -2,9 +2,18 @@ import os
@@ -21,16 +21,27 @@ index cedddf2..8b44ff3 100644
  build_cuda_ext = is_available() or os.getenv('FORCE_CUDA', '0') == '1'
  
  cuda_extension = None
-@@ -21,7 +30,7 @@ setup(
+@@ -17,11 +26,17 @@ elif build_cuda_ext:
+         sources=['fused_adan/pybind_adan.cpp', './fused_adan/fused_adan_kernel.cu', './fused_adan/multi_tensor_adan_kernel.cu']
+     )
+ 
++# Auto-generate local version from CUDA and PyTorch versions.
++_version = "0.0.2"
++cuda_version = torch.version.cuda
++if cuda_version:
++    _version = f"{_version}+cu.{cuda_version}.torch.{TORCH_MAJOR}.{TORCH_MINOR}"
++
+ setup(
      name='adan',
      python_requires='>=3.8',
-     version='0.0.2',
+-    version='0.0.2',
 -    install_requires=['torch'],
++    version=_version,
 +    install_requires=[f'torch=={TORCH_MAJOR}.{TORCH_MINOR}.*'],
      py_modules=['adan'],
      description=(
          'Adan: Adaptive Nesterov Momentum Algorithm for '
-@@ -33,4 +42,4 @@ setup(
+@@ -33,4 +48,4 @@ setup(
      ),
      ext_modules=[cuda_extension] if cuda_extension is not None else [],
      cmdclass={'build_ext': BuildExtension} if build_cuda_ext else {},
