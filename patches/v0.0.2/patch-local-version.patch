@@ -1,0 +1,23 @@
+diff --git a/setup.py b/setup.py
+index 1234567..abcdefg 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1,3 +1,4 @@
++import torch
+ from setuptools import setup, find_packages
+ from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+ import os
+@@ -6,6 +7,13 @@ os.environ['TORCH_CUDA_ARCH_LIST'] = "7.5;8.0;8.6;8.9;9.0"
+ if os.environ.get('ADAN_FORCE_CXX11_ABI'):
+     os.environ['FORCE_CXX11_ABI'] = os.environ['ADAN_FORCE_CXX11_ABI']
+
++# Auto-generate local version from CUDA and PyTorch versions.
++_version = "0.0.2"
++cuda_version = torch.version.cuda
++torch_version = ".".join(torch.__version__.split(".")[:2])
++if cuda_version:
++    _version = f"{_version}+cu.{cuda_version}.torch.{torch_version}"
++
+ setup(
+     name='adan',
+     python_requires='>=3.8',
