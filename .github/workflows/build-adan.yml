@@ -170,7 +170,7 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w /tmp/cibuildwheel/repaired_wheel {wheel} ${CI_AUDITWHEEL_EXCLUDES}"
           CIBW_BUILD_FRONTEND: "build[uv]; args: --no-isolation"
           CIBW_BEFORE_TEST: pip install torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION}
-          CIBW_TEST_COMMAND: python -c "import adan; print(f'adan={adan.__version__}'); assert hasattr(adan, 'Adan'), 'Missing Adan class'"
+          CIBW_TEST_COMMAND: python -c "import adan; assert hasattr(adan, 'Adan'), 'Missing Adan class'"
 
       - name: Embed SBOM into wheel
         run: |
