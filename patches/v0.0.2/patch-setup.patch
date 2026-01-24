@@ -26,17 +26,17 @@ index cedddf2..1557d2c 100644
      )
  
 +# Auto-generate local version from CUDA and PyTorch versions.
-+_version = "0.0.2"
++version = "0.0.2"
 +cuda_version = torch.version.cuda
 +if cuda_version:
-+    _version = f"{_version}+cu.{cuda_version}.torch.{TORCH_MAJOR}.{TORCH_MINOR}"
++    version = f"{version}+cu.{cuda_version}.torch.{TORCH_MAJOR}.{TORCH_MINOR}"
 +
  setup(
      name='adan',
      python_requires='>=3.8',
 -    version='0.0.2',
 -    install_requires=['torch'],
-+    version=_version,
++    version=version,
 +    install_requires=[f'torch=={TORCH_MAJOR}.{TORCH_MINOR}.*'],
      py_modules=['adan'],
      description=(
