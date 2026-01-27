@@ -143,12 +143,14 @@ jobs:
           CIBW_BUILD: cp${{ env.MATRIX_PYTHON_VERSION }}-*64
           CIBW_MANYLINUX_X86_64_IMAGE: pytorch/manylinux2_28-builder:cuda${{ env.MANYLINUX_CUDA_VERSION }}
           CIBW_MANYLINUX_AARCH64_IMAGE: pytorch/manylinuxaarch64-builder:cuda${{ env.MANYLINUX_CUDA_VERSION }}
+          CIBW_BEFORE_ALL: >
+            curl -LsSf https://astral.sh/uv/install.sh | sh
           # TODO(charlie): The PyTorch CUDA 12.9 index is missing cuda-bindings==12.9.4, but PyTorch 2.10 depends on it.
           CIBW_BEFORE_BUILD_LINUX: >
-            pip install setuptools wheel &&
-            pip install typing-extensions==4.12.2 &&
-            if [ "${MATRIX_CUDA_VERSION}" = "129" ] && [ "${MATRIX_TORCH_VERSION}" = "2.10" ]; then pip install cuda-bindings==12.9.4; fi &&
-            pip install --no-cache-dir torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION} &&
+            uv pip install --system setuptools wheel &&
+            uv pip install --system typing-extensions==4.12.2 &&
+            if [ "${MATRIX_CUDA_VERSION}" = "129" ] && [ "${MATRIX_TORCH_VERSION}" = "2.10" ]; then uv pip install --system cuda-bindings==12.9.4; fi &&
+            uv pip install --system --no-cache-dir torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION} &&
             bash build_scripts/prepare_for_build.sh ${{ steps.adan-version.outputs.version }}
           CIBW_ENVIRONMENT: >
             PATH=$PATH:/root/.local/bin
@@ -166,7 +168,9 @@ jobs:
             CI_AUDITWHEEL_EXCLUDES="${{ env.CI_AUDITWHEEL_EXCLUDES }}"
           CIBW_SKIP: "*musllinux*"
           CIBW_REPAIR_WHEEL_COMMAND_LINUX: "auditwheel repair -w /tmp/cibuildwheel/repaired_wheel {wheel} ${CI_AUDITWHEEL_EXCLUDES}"
-          CIBW_BUILD_FRONTEND: "pip; args: --no-build-isolation"
+          CIBW_BUILD_FRONTEND: "build[uv]; args: --no-isolation"
+          CIBW_BEFORE_TEST: pip install torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION}
+          CIBW_TEST_COMMAND: python -c "import adan; assert hasattr(adan, 'Adan'), 'Missing Adan class'"
 
       - name: Embed SBOM into wheel
         run: |
