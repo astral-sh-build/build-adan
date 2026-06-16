@@ -172,7 +172,7 @@ jobs:
           CIBW_BEFORE_TEST: pip install torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION}
           CIBW_TEST_COMMAND: python -c "import adan; assert hasattr(adan, 'Adan'), 'Missing Adan class'"
 
-      - name: Embed SBOM into wheel
+      - name: Embed metadata into wheel
         run: |
           for wheel in dist/*.whl; do
             uv run --script build_scripts/embed_patches.py "$wheel" "build_scripts/patches/${ADAN_VERSION}" \
@@ -180,7 +180,9 @@ jobs:
               --source-tag "${ADAN_VERSION}" \
               --source-commit "${SOURCE_COMMIT}" \
               --build-repo "https://github.com/astral-sh-build/build-adan" \
-              --build-commit "${BUILD_COMMIT}"
+              --build-commit "${BUILD_COMMIT}" \
+              --license-expression "Apache-2.0" \
+              --license-file "LICENSE:LICENSE"
           done
         env:
           ADAN_VERSION: ${{ steps.adan-version.outputs.version }}
