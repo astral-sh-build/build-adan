@@ -11,11 +11,11 @@ version. Each wheel has a local version suffix that identifies the CUDA, PyTorch
 was built against, such as `adan==0.0.2+cu12.8torch2.10.0cxx11abiTRUE`, and requires the matching
 PyTorch minor release.
 
-Pre-built wheels are available on [Astral's GPU indexes](https://wheels.astralshosted.com/index.html).
+Pre-built wheels are available on [Astral's GPU indexes](https://wheels.astralhosted.com/index.html).
 For example, to install a CUDA 12.8 build:
 
 ```console
-$ uv add adan --index astral-cu128=https://wheels.astralshosted.com/simple/cu128/
+$ uv add adan --index astral-cu128=https://wheels.astralhosted.com/simple/cu128/
 ```
 
 This configures the index and uses it as the source for `adan`:
@@ -26,13 +26,13 @@ adan = { index = "astral-cu128" }
 
 [[tool.uv.index]]
 name = "astral-cu128"
-url = "https://wheels.astralshosted.com/simple/cu128/"
+url = "https://wheels.astralhosted.com/simple/cu128/"
 ```
 
 Or, with `uv pip`:
 
 ```console
-$ uv pip install --index https://wheels.astralshosted.com/simple/cu128/ adan
+$ uv pip install --index https://wheels.astralhosted.com/simple/cu128/ adan
 ```
 
 ## Supported versions
