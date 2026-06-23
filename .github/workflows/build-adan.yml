@@ -67,7 +67,7 @@ jobs:
           if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
             TAG="${INPUTS_RELEASE_TAG}"
             # Remove -rN suffix if present
-            ADAN_VERSION=$(printf '%s\\n' "${TAG}" | sed -E 's/-r[0-9]+$//')
+            ADAN_VERSION=$(sed -E 's/-r[0-9]+$//' <<<"${TAG}")
           else
             ADAN_VERSION="v0.0.2"
           fi
