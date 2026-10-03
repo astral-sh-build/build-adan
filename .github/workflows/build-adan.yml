@@ -147,6 +147,8 @@ jobs:
             uv pip install --system --no-cache-dir torch==${{ matrix.torch-version }} --index-url https://download.pytorch.org/whl/cu${MATRIX_CUDA_VERSION} &&
             bash build_scripts/prepare_for_build.sh ${{ steps.adan-version.outputs.version }}
           CIBW_ENVIRONMENT: >
+            UV_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cu${{ env.MATRIX_CUDA_VERSION }}
+            UV_INDEX_STRATEGY=unsafe-first-match
             PATH=$PATH:/root/.local/bin
             CUDA_HOME="/usr/local/cuda-${{ env.MANYLINUX_CUDA_VERSION }}"
             LIBRARY_PATH="/usr/lib64"
